@@ -1,20 +1,20 @@
-## cara instalasi
+## Cara Instalasi
 
-- Clone project ini dengan mengetikan "git clone https://github.com/ziwanarp/restfull-api.git" di cmd/gitbash
+Clone project ini dengan mengetikan "git clone https://github.com/ziwanarp/restfull-api.git" di cmd/gitbash
 
-- Instal composer (jika belum ada)
+Instal composer (jika belum ada)
 
-- buka cmd/gitbash di direktori project lalu ketik "composer install" tunggu sampai selesai
+buka cmd/gitbash di direktori project lalu ketik "composer install" tunggu sampai selesai
 
-- buat file .env lalu sesuaikan isinya dengan environtment pc kalian
+buat file .env lalu sesuaikan isinya dengan environtment pc kalian
 
-- buka cmd/gitbash lalu ketik "php artisan key:generate"
+buka cmd/gitbash lalu ketik "php artisan key:generate"
 
-- buka cmd/gitbash lalu ketik "php artisan migrate"
+buka cmd/gitbash lalu ketik "php artisan migrate"
 
-- buka cmd/gitbash lalu ketik "php artisan serve"
+buka cmd/gitbash lalu ketik "php artisan serve"
 
-- aplikasi sudah dapat digunakan
+aplikasi sudah dapat digunakan
 
 ## instalasi docker
 
