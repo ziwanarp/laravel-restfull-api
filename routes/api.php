@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AddressesController;
+use App\Http\Controllers\CustomersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+Route::apiResource('customer', CustomersController::class)->except('create','edit');
+Route::apiResource('address', AddressesController::class);
