@@ -18,4 +18,4 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::apiResource('customer', CustomersController::class)->except('create','edit');
-Route::apiResource('address', AddressesController::class);
+Route::apiResource('address', AddressesController::class)->except('create','edit');
