@@ -4,82 +4,156 @@ namespace App\Http\Controllers;
 
 use App\Models\Addresses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AddressesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
-        //
+         // get all address
+         $address = Addresses::all();
+
+         // condition if address 0 or !0
+         if(count($address) != 0){
+             return response()->json([
+                 'status' => 200,
+                 'message' =>'success',
+                 'data' => $address,
+             ],200);
+         } else {
+             return response()->json([
+                 'status' => 200,
+                 'message'=>'no data available',
+                 'data' => $address,
+             ],200);
+         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(Request $request)
     {
-        //
+        // set rules
+        $rules = [
+            'customer_id' => 'required|integer',
+            'address' => 'required|max:255',
+            'district' => 'required|max:255',
+            'city' => 'required|max:255',
+            'province' => 'required|max:255',
+            'postal_code' => 'required|integer'
+        ];
+
+        // Set validation
+        $validator = Validator::make($request->all(), $rules);
+
+        // if validate error return 422
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'message' => $validator->messages()->first()
+            ],422);
+       }
+
+        //insert data
+        $address = Addresses::create($request->all());
+
+        // return json response 201
+        return response()->json([
+            'status' => 201,
+            'message' => 'data created',
+            'data' => $address
+        ],201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Addresses  $addresses
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Addresses $addresses)
+    
+    public function show($address)
     {
-        //
+        // find address by id
+        $addresses = Addresses::find($address);
+        
+        // condition if address 0 or !0
+        if($addresses != null){
+            return response()->json([
+                'status'=> 200,
+                'message' => 'success',
+                'data' => $addresses,
+            ],200);
+        } else {
+            return response()->json([
+                'status'=> 200,
+                'message' => 'no data available',
+                'data' => $addresses,
+            ],200);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Addresses  $addresses
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Addresses $addresses)
+    
+    public function update(Request $request, $address)
     {
-        //
+        // find address by id
+        $addresses = Addresses::find($address);
+
+        if($addresses != null){
+            // set rules validation
+            $rules = [
+                'customer_id' => 'required|integer',
+                'address' => 'required|max:255',
+                'district' => 'required|max:255',
+                'city' => 'required|max:255',
+                'province' => 'required|max:255',
+                'postal_code' => 'required|integer'
+            ];
+            // set validation
+            $validator = Validator::make($request->all(), $rules);
+
+            // if validate error return 422
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->messages()->first()
+                ],422);
+            }
+            // set data for update
+            $addresses->customer_id = $request->customer_id;
+            $addresses->address = $request->address;
+            $addresses->district = $request->district;
+            $addresses->city = $request->city;
+            $addresses->province = $request->province;
+            $addresses->postal_code = $request->postal_code;
+            $addresses->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'data updated',
+                'data' => $addresses,
+            ],200);
+        } else {
+            return response()->json([
+                'status' => 200,
+                'message' => 'update failed',
+                'data' => $addresses,
+            ],200);
+
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Addresses  $addresses
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Addresses $addresses)
+    
+    public function destroy($address)
     {
-        //
-    }
+        // find address and delete by id
+        $deleted = Addresses::destroy($address);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Addresses  $addresses
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Addresses $addresses)
-    {
-        //
+        if($deleted != 0){
+            return response()->json([
+                'status' => 200,
+                'message' => 'success deleted',
+            ],200);
+        } else {
+            return response()->json([
+                'status' => 200,
+                'message' => 'delete failed',
+            ],200);
+
+        }
     }
 }
