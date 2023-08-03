@@ -17,21 +17,15 @@ class CustomersController extends Controller
         // condition if customers 0 or !0
         if(count($customer) != 0){
             return response()->json([
-                'status' => true,
-                'code' => 200,
+                'status' => 200,
                 'message' =>'success',
-                'dataCount' => count($customer),
-                'dataName' => 'Customers',
                 'data' => $customer,
             ],200);
         } else {
             return response()->json([
-                'status' => true,
-                'code' => 200,
-                'message'=>'success',
-                'dataCount' => count($customer),
-                'dataName' => 'Customers',
-                'data' => 'no data available',
+                'status' => 200,
+                'message'=>'no data available',
+                'data' => $customer,
             ],200);
         }
     }
@@ -39,21 +33,23 @@ class CustomersController extends Controller
 
     public function store(Request $request)
     {
-        // Set mimes validation
-        $validator = Validator::make($request->all(), [
+        // set rules
+        $rules = [
             'title' => 'required|in:Mr,Mrs',
             'name' => 'required|max:255',
             'gender' => 'required|in:M,F',
             'phone_number' => 'required|min:10|max:13|unique:customers',
             'image' => 'required|max:255',
-            'email' => 'required|email:dns|unique:customers|max:255'
-        ]);
+            'email' => 'required|email|unique:customers|max:255'
+        ];
+
+        // Set validation
+        $validator = Validator::make($request->all(), $rules);
 
         // if validate error return 422
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'code' => 422,
+                'status' => 422,
                 'message' => $validator->messages()->first()
             ],422);
        }
@@ -63,9 +59,8 @@ class CustomersController extends Controller
 
         // return json response 201
         return response()->json([
-            'status' => true,
-            'code' => 201,
-            'message' => 'success',
+            'status' => 201,
+            'message' => 'data created',
             'data' => $customer
         ],201);
         
@@ -80,17 +75,15 @@ class CustomersController extends Controller
         // condition if customer 0 or !0
         if($customers != null){
             return response()->json([
-                'status'=> true,
-                'code' => 200,
+                'status'=> 200,
                 'message' => 'success',
                 'data' => $customers,
             ],200);
         } else {
             return response()->json([
-                'status'=> false,
-                'code' => 200,
-                'message' => 'success',
-                'data' => "data not found",
+                'status'=> 200,
+                'message' => 'no data available',
+                'data' => $customers,
             ],200);
         }
         
@@ -111,7 +104,7 @@ class CustomersController extends Controller
             ];
 
             if ($request->email != $customers->email) {
-                $rules['email'] = 'required|email:dns|unique:customers|max:255';
+                $rules['email'] = 'required|email|unique:customers|max:255';
             }
 
             if ($request->phone_number != $customers->phone_number) {
@@ -123,8 +116,7 @@ class CustomersController extends Controller
             // if validate error return 422
             if ($validator->fails()) {
                 return response()->json([
-                    'status' => false,
-                    'code' => 422,
+                    'status' => 422,
                     'message' => $validator->messages()->first()
                 ],422);
             }
@@ -140,17 +132,15 @@ class CustomersController extends Controller
             $customers->save();
 
             return response()->json([
-                'status' => true,
-                'code' => 200,
-                'message' => 'success',
+                'status' => 200,
+                'message' => 'data updated',
                 'data' => $customers,
             ],200);
         } else {
             return response()->json([
-                'status' => false,
-                'code' => 200,
-                'message' => 'failed',
-                'data' => 'customer id not found',
+                'status' => 200,
+                'message' => 'update failed',
+                'data' => $customers,
             ],200);
 
         }
@@ -169,15 +159,13 @@ class CustomersController extends Controller
 
         if($deleted != 0){
             return response()->json([
-                'status' => true,
-                'code' => 200,
-                'message' => 'success',
+                'status' => 200,
+                'message' => 'success deleted',
             ],200);
         } else {
             return response()->json([
-                'status' => false,
-                'code' => 200,
-                'message' => 'failed',
+                'status' => 200,
+                'message' => 'delete failed',
             ],200);
 
         }
