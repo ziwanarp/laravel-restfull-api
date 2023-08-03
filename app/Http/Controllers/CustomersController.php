@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Addresses;
 use App\Models\Customers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -71,9 +72,12 @@ class CustomersController extends Controller
     {
         // find customer by id
         $customers = Customers::find($customer);
+        $addresses = Addresses::where('customer_id', $customer)->get();
         
         // condition if customer 0 or !0
         if($customers != null){
+            $customers['address'] = $addresses;
+
             return response()->json([
                 'status'=> 200,
                 'message' => 'success',
@@ -151,11 +155,10 @@ class CustomersController extends Controller
 
     public function destroy($customer)
     {
-        // delete semua post jika user_id dihapus
-        // DB::table('posts')->where('user_id', '=', $user->id)->delete();
-
         // delete customer by id
         $deleted = Customers::destroy($customer);
+        // delete address by customer_id
+        Addresses::where('customer_id', $customer)->delete();
 
         if($deleted != 0){
             return response()->json([
