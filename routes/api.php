@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AddressesController;
 use App\Http\Controllers\CustomersController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'auth']);
+Route::middleware('auth:api')->group(function(){
+    Route::apiResource('customer', CustomersController::class)->except('create','edit');
+    Route::apiResource('address', AddressesController::class)->except('create','edit');
+});
 
-
-Route::apiResource('customer', CustomersController::class)->except('create','edit');
-Route::apiResource('address', AddressesController::class)->except('create','edit');
