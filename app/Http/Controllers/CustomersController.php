@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CustomerResource;
+use App\Http\Resources\JsonFailResource;
+use App\Http\Resources\JsonUnvalidatedResource;
 use App\Models\Addresses;
 use App\Models\Customers;
 use Illuminate\Http\Request;
@@ -9,26 +12,21 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomersController extends Controller
 {
-    
+
     public function index()
     {
         // get all customers
         $customer = Customers::all();
 
         // condition if customers 0 or !0
-        if(count($customer) != 0){
+        if (count($customer) != 0) {
             return response()->json([
                 'status' => 200,
-                'message' =>'success',
+                'message' => 'success',
                 'data' => $customer,
-            ],200);
-        } else {
-            return response()->json([
-                'status' => 200,
-                'message'=>'no data available',
-                'data' => $customer,
-            ],200);
+            ], 200);
         }
+        return new JsonFailResource(200);
     }
 
 
@@ -47,50 +45,19 @@ class CustomersController extends Controller
         // Set validation
         $validator = Validator::make($request->all(), $rules);
 
-        // if validate error return 422
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 422,
-                'message' => $validator->messages()->first()
-            ],422);
-       }
-
-        //insert data
-        $customer = Customers::create($request->all());
-
-        // return json response 201
-        return response()->json([
-            'status' => 201,
-            'message' => 'data created',
-            'data' => $customer
-        ],201);
-        
+            return new JsonUnvalidatedResource($validator);
+        }
+        return new CustomerResource(Customers::create($request->all()));
     }
 
 
     public function show($customer)
     {
-        // find customer by id
-        $customers = Customers::find($customer);
-        $addresses = Addresses::where('customer_id', $customer)->get();
-        
-        // condition if customer 0 or !0
-        if($customers != null){
-            $customers['address'] = $addresses;
-
-            return response()->json([
-                'status'=> 200,
-                'message' => 'success',
-                'data' => $customers,
-            ],200);
-        } else {
-            return response()->json([
-                'status'=> 200,
-                'message' => 'no data available',
-                'data' => $customers,
-            ],200);
+        if (Customers::find($customer) != null) {
+            return new CustomerResource(Customers::find($customer));
         }
-        
+        return new JsonFailResource(200);
     }
 
 
@@ -98,7 +65,7 @@ class CustomersController extends Controller
     {
         $customers = Customers::find($customer);
 
-        if($customers != null){
+        if ($customers != null) {
             // set rules validation
             $rules = [
                 'title' => 'required|in:Mr,Mrs',
@@ -122,11 +89,11 @@ class CustomersController extends Controller
                 return response()->json([
                     'status' => 422,
                     'message' => $validator->messages()->first()
-                ],422);
+                ], 422);
             }
 
             // Customers::where('id', $customer)->update([$request->all()]);
-            
+
             $customers->title = $request->title;
             $customers->name = $request->name;
             $customers->gender = $request->gender;
@@ -139,17 +106,14 @@ class CustomersController extends Controller
                 'status' => 200,
                 'message' => 'data updated',
                 'data' => $customers,
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 200,
                 'message' => 'update failed',
                 'data' => $customers,
-            ],200);
-
+            ], 200);
         }
-
-        
     }
 
 
@@ -160,18 +124,16 @@ class CustomersController extends Controller
         // delete address by customer_id
         Addresses::where('customer_id', $customer)->delete();
 
-        if($deleted != 0){
+        if ($deleted != 0) {
             return response()->json([
                 'status' => 200,
                 'message' => 'success deleted',
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 200,
                 'message' => 'delete failed',
-            ],200);
-
+            ], 200);
         }
-
     }
 }

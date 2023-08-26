@@ -8,34 +8,34 @@ use Illuminate\Support\Facades\Validator;
 
 class AddressesController extends Controller
 {
-    
+
     public function index()
     {
-         // get all address
-         $address = Addresses::all();
+        // get all address
+        $address = Addresses::all();
 
-         // condition if address 0 or !0
-         if(count($address) != 0){
-             return response()->json([
-                 'status' => 200,
-                 'message' =>'success',
-                 'data' => $address,
-             ],200);
-         } else {
-             return response()->json([
-                 'status' => 200,
-                 'message'=>'no data available',
-                 'data' => $address,
-             ],200);
-         }
+        // condition if address 0 or !0
+        if (count($address) != 0) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'success',
+                'data' => $address,
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 200,
+                'message' => 'no data available',
+                'data' => $address,
+            ], 200);
+        }
     }
 
-    
+
     public function store(Request $request)
     {
         // set rules
         $rules = [
-            'customer_id' => 'required|integer',
+            'customers_id' => 'required|integer',
             'address' => 'required|max:255',
             'district' => 'required|max:255',
             'city' => 'required|max:255',
@@ -51,8 +51,8 @@ class AddressesController extends Controller
             return response()->json([
                 'status' => 422,
                 'message' => $validator->messages()->first()
-            ],422);
-       }
+            ], 422);
+        }
 
         //insert data
         $address = Addresses::create($request->all());
@@ -62,41 +62,41 @@ class AddressesController extends Controller
             'status' => 201,
             'message' => 'data created',
             'data' => $address
-        ],201);
+        ], 201);
     }
 
-    
+
     public function show($address)
     {
         // find address by id
         $addresses = Addresses::find($address);
-        
+
         // condition if address 0 or !0
-        if($addresses != null){
+        if ($addresses != null) {
             return response()->json([
-                'status'=> 200,
+                'status' => 200,
                 'message' => 'success',
                 'data' => $addresses,
-            ],200);
+            ], 200);
         } else {
             return response()->json([
-                'status'=> 200,
+                'status' => 200,
                 'message' => 'no data available',
                 'data' => $addresses,
-            ],200);
+            ], 200);
         }
     }
 
-    
+
     public function update(Request $request, $address)
     {
         // find address by id
         $addresses = Addresses::find($address);
 
-        if($addresses != null){
+        if ($addresses != null) {
             // set rules validation
             $rules = [
-                'customer_id' => 'required|integer',
+                'customers_id' => 'required|integer',
                 'address' => 'required|max:255',
                 'district' => 'required|max:255',
                 'city' => 'required|max:255',
@@ -111,10 +111,10 @@ class AddressesController extends Controller
                 return response()->json([
                     'status' => 422,
                     'message' => $validator->messages()->first()
-                ],422);
+                ], 422);
             }
             // set data for update
-            $addresses->customer_id = $request->customer_id;
+            $addresses->customers_id = $request->customers_id;
             $addresses->address = $request->address;
             $addresses->district = $request->district;
             $addresses->city = $request->city;
@@ -126,34 +126,32 @@ class AddressesController extends Controller
                 'status' => 200,
                 'message' => 'data updated',
                 'data' => $addresses,
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 200,
                 'message' => 'update failed',
                 'data' => $addresses,
-            ],200);
-
+            ], 200);
         }
     }
 
-    
+
     public function destroy($address)
     {
         // find address and delete by id
         $deleted = Addresses::destroy($address);
 
-        if($deleted != 0){
+        if ($deleted != 0) {
             return response()->json([
                 'status' => 200,
                 'message' => 'success deleted',
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 200,
                 'message' => 'delete failed',
-            ],200);
-
+            ], 200);
         }
     }
 }
