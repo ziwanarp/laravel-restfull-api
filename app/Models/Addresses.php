@@ -10,4 +10,9 @@ class Addresses extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customers::class);
+    }
 }
