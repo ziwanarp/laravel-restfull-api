@@ -15,7 +15,7 @@ class JsonFailResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'status' => 200,
+            'status' => isset($this->resource['status']) ? $this->resource['status'] : false,
             'message' => 'Data Not Found',
             'data' => null
         ];

@@ -15,7 +15,7 @@ class JsonUnvalidatedResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'status' => 422,
+            'status' => false,
             'message' => $this->messages()->first(),
             'data' => null
         ];

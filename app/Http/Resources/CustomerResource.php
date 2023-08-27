@@ -16,7 +16,7 @@ class CustomerResource extends JsonResource
     {
         return
         [
-            'status' => 200,
+            'status' => true,
             'message' => 'success',
             'data' => [
                 'id' => $this->id,

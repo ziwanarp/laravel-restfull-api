@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CustomerCollection;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\JsonFailResource;
 use App\Http\Resources\JsonUnvalidatedResource;
@@ -15,24 +16,17 @@ class CustomersController extends Controller
 
     public function index()
     {
-        // get all customers
+        // get all customer
         $customer = Customers::all();
-
-        // condition if customers 0 or !0
-        if (count($customer) != 0) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'success',
-                'data' => $customer,
-            ], 200);
+        if (count($customer) != null) {
+            return new CustomerCollection($customer);
         }
-        return new JsonFailResource(200);
+        return new JsonFailResource(['status' => false]);
     }
 
 
     public function store(Request $request)
     {
-        // set rules
         $rules = [
             'title' => 'required|in:Mr,Mrs',
             'name' => 'required|max:255',
@@ -42,7 +36,6 @@ class CustomersController extends Controller
             'email' => 'required|email|unique:customers|max:255'
         ];
 
-        // Set validation
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -57,7 +50,7 @@ class CustomersController extends Controller
         if (Customers::find($customer) != null) {
             return new CustomerResource(Customers::find($customer));
         }
-        return new JsonFailResource(200);
+        return new JsonFailResource(['status' => false]);
     }
 
 
@@ -84,15 +77,10 @@ class CustomersController extends Controller
 
             $validator = Validator::make($request->all(), $rules);
 
-            // if validate error return 422
+            // if fvalidation fails
             if ($validator->fails()) {
-                return response()->json([
-                    'status' => 422,
-                    'message' => $validator->messages()->first()
-                ], 422);
+                return new JsonUnvalidatedResource($validator);
             }
-
-            // Customers::where('id', $customer)->update([$request->all()]);
 
             $customers->title = $request->title;
             $customers->name = $request->name;
