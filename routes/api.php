@@ -22,3 +22,11 @@ Route::middleware('auth:api')->group(function(){
     Route::apiResource('address', AddressesController::class)->except('create','edit');
 });
 
+// if routing !found
+Route::fallback(function () {
+    return response()->json([
+        'status' => 404,
+        'message' => 'Not Found'
+    ],404);
+});
+
