@@ -20,15 +20,5 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
 
-  # migrate:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - mysql
-  #   volumes:
-  #     - db_data:/app/lib/mysql
-  #   command: php artisan migrate
-
 volumes:
   db_data:
