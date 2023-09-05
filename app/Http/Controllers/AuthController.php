@@ -23,20 +23,34 @@ class AuthController extends Controller
         //get credentials from request
         $credentials = $request->only('email', 'password');
 
-        //if auth failed
-        if(!$token = auth()->guard('api')->attempt($credentials)) {
+        if (auth()->attempt($credentials)) {
+            $user = auth()->user();
+            $token = $user->createToken('laravel-restfull-api')->plainTextToken;
             return response()->json([
-                'success' => false,
-                'message' => 'Email atau Password Anda salah'
-            ], 401);
+                'success' => true,
+                'user'    => auth()->user(),
+                'token' => $token
+            ], 200);
         }
 
-        //if auth success
         return response()->json([
-            'success' => true,
-            'user'    => auth()->guard('api')->user(),    
-            'token'   => $token   
-        ], 200);
-    }
+            'success' => false,
+            'message' => 'Email atau Password Anda salah'
+        ], 401);
 
+        //if auth failed
+        // if(!$token = auth()->guard('api')->attempt($credentials)) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Email atau Password Anda salah'
+        //     ], 401);
+        // }
+
+        // //if auth success
+        // return response()->json([
+        //     'success' => true,
+        //     'user'    => auth()->guard('api')->user(),    
+        //     'token'   => $token   
+        // ], 200);
+    }
 }

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 // Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'auth']);
-Route::middleware('auth:api')->group(function(){
+Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('customer', CustomersController::class)->except('create','edit');
     Route::apiResource('address', AddressesController::class)->except('create','edit');
 });
